@@ -12,8 +12,8 @@
       GA4_MEASUREMENT_ID: "G-YH7PR2KMK8",       // your GA4 ID
       GTM_CONTAINER_ID  : "",                   // optional: add if/when you move to GTM
       CONSENT_REGION    : "us",                 // switch to "eea" for stricter defaults
-      CROSS_DOMAIN_HOSTS: [],                   // add destination domains you own to stitch sessions
-      MP_ENDPOINT       : "",                   // optional server endpoint for Measurement Protocol relay
+      CROSS_DOMAIN_HOSTS: [],
+      MP_ENDPOINT       : "",
       UTM_DEFAULTS      : {
         utm_source  : "qr",
         utm_medium  : "github_pages",
@@ -142,7 +142,6 @@
         <div class="head"><h2 style="margin:0;font-size:14px">PDF Downloads</h2></div>
         <div id="docList" class="list" aria-live="polite"></div>
 
-        <!-- NEW: Redirect Button block -->
         <div style="padding:12px;display:flex;justify-content:flex-end">
           <a id="redirectBtn" class="btn"
              href="https://zaq.jby.mybluehost.me/monet/"
@@ -163,15 +162,22 @@
 
   <script>
     /* ============================= CONTENT CONFIG ============================= */
-    const YT_ID      = "wrjK2Ob6EQk"; // set "" to hide video card; update if you switch videos
-    const OWNER_REPO = "ctlamedicamarketing/qr-redirects";
-    const TAG        = "monet-1.0";
+    const YT_ID      = "wrjK2Ob6EQk"; // set "" to hide video card
+    const OWNER_REPO = "ctlamedicamarketing/monet-training-10-31-25";
+    const TAG        = "monet-1.1";
 
+    // Exact filenames from the release assets
     const DOCS = [
-      { label: "MONET — Surgical Technique Guide (STG)", file: "MONET-STG.pdf",
-        desc: "Complete technique steps, instrumentation, and intraoperative guidance." },
-      { label: "MONET — Overview", file: "OVR-MONET-20210208.pdf",
-        desc: "Earlier overview for historical reference." }
+      {
+        label: "MONET — Surgical Technique Guide (Rev J) — STG.113.001",
+        file : "STG.113.001.-.MONET.STG.Rev.J.pdf",
+        desc : "Complete technique steps, instrumentation, and intraoperative guidance."
+      },
+      {
+        label: "NITRO — Surgical Technique Guide (Rev D) — STG.213.002",
+        file : "STG.213.002.-.MONET.NITRO.STG.-.REV.D.pdf",
+        desc : "NITRO adjunct guide (latest revision from the Monet training release)."
+      }
     ];
     /* =========================== END CONTENT CONFIG =========================== */
 
@@ -230,7 +236,7 @@
     })();
 
     (function qrScanBoot(){
-      const slug = 'monet'; // path-based slug for this page
+      const slug = 'monet';
       const q = new URLSearchParams(location.search);
       const utms = {};
       ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(k=>{
@@ -239,20 +245,15 @@
       sendEvent('qr_scan', { slug, page_location: location.href, ...utms });
     })();
 
-    // NEW: Redirect button — add UTMs, log, then go
     (function initRedirectBtn(){
       const btn = document.getElementById('redirectBtn');
       if (!btn) return;
-
-      // Ensure UTMs are present on the button's href
       btn.href = withUTMs(btn.href);
-
       btn.addEventListener('click', ()=>{
         sendEvent('redirect_click', { slug:'monet', link_url: btn.href });
       });
     })();
 
-    // Global outbound click logger (covers future links you might add)
     document.addEventListener('click', (e)=>{
       const a = e.target.closest('a[href]'); if (!a) return;
       if (isOutbound(a.href)) {
